@@ -74,68 +74,6 @@ model = FastLanguageModel.get_peft_model(
     loftq_config = config["model"]["peft"]["loftq_config"],
 )
 
-dataset_paths = [
-    "datasets/MTI_miRTarBase/processed",
-    "datasets/ADME_BBB_Martins/processed", 
-    "datasets/PeptideMHC_MHC1_IEDB-IMGT_Nielsen/processed", 
-    ]
-
-def open_pkl(loc):
-    with open(loc, "rb") as f0: 
-        data = pickle.load(f0)
-        
-    return data
-        
-
-def load_train_data(path):
-    EOS_TOKEN = tokenizer.eos_token # Must add EOS_TOKEN
-    
-    ds_path = os.path.join(path, "train.pkl")
-    ds = open_pkl(ds_path)
-    ds["text"] = list(map(lambda x: x+EOS_TOKEN,ds["text"]))
-    ds = pd.DataFrame.from_dict(ds)
-    return ds
-
-def load_test_data(path, _set):
-    EOS_TOKEN = tokenizer.eos_token # Must add EOS_TOKEN
-    
-    ds_path = os.path.join(path, f"{_set}.pkl")
-    ds = open_pkl(ds_path)
-    ds["text"] = list(map(lambda x: x+EOS_TOKEN,ds["text"]))
-    ds = pd.DataFrame.from_dict(ds)
-    return ds
-    
-
-def load_and_prepdata(dataset_paths, ds_set="train", json_folder="final_data", sample=0.5):
-    os.makedirs(json_folder,exist_ok=True)
-    
-    final_df = pd.DataFrame()
-    if ds_set == "train":
-        for i,p in enumerate(dataset_paths):
-            dataset_i = load_train_data(p)
-            final_df = pd.concat([final_df, dataset_i], axis=0, ignore_index=True)
-  
-    else:
-        #check if change is required
-        for i,p in enumerate(dataset_paths):
-            dataset_i = load_test_data(p,ds_set)
-            final_df = pd.concat([final_df, dataset_i], axis=0, ignore_index=True)
-    
-    final_df = final_df.sample(
-        frac=sample, 
-        random_state=config["seed"]
-        )
-    
-    final_df.to_json(
-            os.path.join(json_folder, f"{ds_set}.json"),
-            orient="records",
-            lines=True
-        )
-    
-    
-load_and_prepdata(dataset_paths, sample=config["dataset"]["frac"])
-load_and_prepdata(dataset_paths, "valid", sample=config["dataset"]["frac"])
-load_and_prepdata(dataset_paths, "test", sample=config["dataset"]["frac"])
 
 dataset = load_dataset(
     "json",
