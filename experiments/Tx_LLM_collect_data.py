@@ -66,6 +66,11 @@ dataset_paths = [
     "datasets/MTI_miRTarBase/processed",
     "datasets/ADME_BBB_Martins/processed", 
     "datasets/PeptideMHC_MHC1_IEDB-IMGT_Nielsen/processed", 
+    "datasets/ADME_HIA_Hou/processed", 
+    "datasets/ADME_PAMPA_NCATS/processed", 
+    "datasets/ADME_Pgp_Broccatelli/processed", 
+    "datasets/Tox_hERG/processed", 
+    "datasets/TrialOutcome_phase1/processed", 
     ]
 
 def open_pkl(loc):

@@ -31,7 +31,7 @@ config  = {
         },
         
         "training_args":{
-            "per_device_train_batch_size":32,
+            "per_device_train_batch_size":16,
             "gradient_accumulation_steps":4,
             "warmup_steps":5,
             "num_train_epochs":1, # Set this for 1 full training run.
@@ -80,6 +80,7 @@ dataset = load_dataset(
     data_files={
         "train":"final_data/train.json",
         "valid":"final_data/valid.json",
+        "test":"final_data/test.json",
     }
 )
 
