@@ -7,6 +7,8 @@ from unsloth import is_bfloat16_supported
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
 from transformers import TrainingArguments
 
+torch.cuda_set_device(7)
+
 config  = {
     "dataset":{
         "frac":0.1,
