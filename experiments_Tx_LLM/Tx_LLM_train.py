@@ -1,4 +1,7 @@
 import os
+
+os.environ["CUDA_VISIBLE_DEVICES"]="7"
+
 import pickle
 import pandas as pd
 import torch
@@ -6,8 +9,7 @@ from datasets import Dataset, load_dataset
 from unsloth import is_bfloat16_supported
 from trl import SFTTrainer, DataCollatorForCompletionOnlyLM
 from transformers import TrainingArguments
-
-torch.cuda_set_device(7)
+from unsloth import FastLanguageModel
 
 config  = {
     "dataset":{
@@ -33,7 +35,7 @@ config  = {
         },
         
         "training_args":{
-            "per_device_train_batch_size":32,
+            "per_device_train_batch_size":64,
             "gradient_accumulation_steps":4,
             "warmup_steps":5,
             "num_train_epochs":1, # Set this for 1 full training run.
@@ -50,10 +52,8 @@ config  = {
     },
     "model_save":"saved_model",
     "seed":49,
+    "device":7,
 }
-
-from unsloth import FastLanguageModel
-import torch
 
 model, tokenizer = FastLanguageModel.from_pretrained(
     model_name = config["model"]["name"],  # or choose "unsloth/Llama-3.2-1B"

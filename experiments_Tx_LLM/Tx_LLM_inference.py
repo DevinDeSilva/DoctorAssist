@@ -1,4 +1,7 @@
 import os
+
+os.environ["CUDA_VISIBLE_DEVICES"]="7"
+
 import pickle
 from typing import List
 import pandas as pd

@@ -1,4 +1,7 @@
 import os
+
+os.environ["CUDA_VISIBLE_DEVICES"]="7"
+
 import pickle
 import pandas as pd
 import torch
@@ -9,7 +12,7 @@ from transformers import TrainingArguments
 
 config  = {
     "dataset":{
-        "frac":0.1,
+        "frac":1,
         },
     "model":{
         "name":"unsloth/Meta-Llama-3.1-8B-bnb-4bit",
