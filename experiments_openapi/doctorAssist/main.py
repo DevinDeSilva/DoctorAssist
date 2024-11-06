@@ -127,11 +127,6 @@ add_current_directory_to_path()
 from agent.planner import Planner, DecompositionAgent
 
 decom = DecompositionAgent(
-    agent_tools=[
-        config["agent"]["efficacy"], 
-        config["agent"]["toxicity"], 
-        config["agent"]["drug_disease_agent"],
-        config["agent"]["drug_medication_agent"]],
     config=config,
     )
 

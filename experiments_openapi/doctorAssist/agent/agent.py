@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from tenacity import retry, wait_random_exponential, stop_after_attempt
 from openai import OpenAI
 import re
-from .agent import Agent
 
 client = OpenAI()
 GPT_MODEL = 'gpt-4o-mini'

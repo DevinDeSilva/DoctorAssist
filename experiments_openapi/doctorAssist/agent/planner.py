@@ -111,7 +111,7 @@ tool_list = [
 ]
 
 class DecompositionAgent(Agent):
-    def __init__(self,  config, depth=1):
+    def __init__(self, config, depth=1):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
@@ -151,6 +151,8 @@ class DecompositionAgent(Agent):
             <subproblem> Provide insights into the adverse interaction of the drug on the Current Medication in the Patient Profile, without resorting to any external tools. </subproblem>
 
         '''
+        
+        super().__init__()
 
         
         
@@ -159,14 +161,14 @@ class DecompositionAgent(Agent):
     def process(self,prompt):
         
         response = self.request(prompt)
-        subproblems = subproblem_extraction(response.choices[0].message.content)
+        subproblems = subproblem_extraction(response)
             
         return subproblems
 
 
 
 class Planner(Agent):
-    def __init__(self, config, model=GPT_MODEL, depth=1):
+    def __init__(self, config, depth=1):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
@@ -175,23 +177,11 @@ class Planner(Agent):
                     You are an expert in assisting doctors to choose drugs for patients.
                     '''
                     
-        if self.agent_tools and len(self.agent_tools) > 0:
-            func_content = json.dumps([
-                {'function_name': func['function']['name'], 'description': func['function']['description']} for func in self.agent_tools
-            ], indent=4)
-  
-            self.role += f"\n The following tools are available for you to use: <tools>{func_content}</tools>."
-            
-        self.system_prompt = self.role
-        
-        if len(self.reasoning_examples) > 0:
-            self.system_prompt += f"\nFor example:{self.reasoning_examples}"
-            
-        self.messages = [{'role': 'system', 'content': self.system_prompt}]
+        super().__init__()
         
     def process_subproblem(self,subproblem, user_prompt):
         process_prompt = f"The original user problem is: {user_prompt}\nNow, please you solve this problem: {subproblem}"
-        response = self.request(self.messages, self.agent_tools, process_prompt)
+        response = self.request(process_prompt)
         
         return response
         
@@ -204,9 +194,9 @@ class Planner(Agent):
         messages = []
         
         system_prompt = f''' 
-            You are an expert in clinical trials. Based on your own knowledge and the sub-problems have solved, please solve the user's problem and provide the reason.
+            You are an expert in Assisting Doctors choose drug for a patients disease. Based on your own knowledge and the sub-problems have solved, please solve the user's problem and provide the reason.
             First, Analysis the user's problem.
-            Second, present the final result of the user's problem in <final_result></final_result>, for a binary problem, it is a value between 0 to 1. You must include the exact probability within the <final_result></final_result> tags, e.g., 'The failure rate of the clinical trial is <final_result>0.8</final_result>.'
+            Second, present the final result of the user's problem in <final_result></final_result>, for a binary problem, it is a value between 0 to 1. You must include the exact probability within the <final_result></final_result> tags, e.g., 'The probability of the drug is effective against the disease with no adverse effect to patient<final_result>0.8</final_result>.'
             Third, explain the reason step by step.
             Noted, you must include the exact probability within the <final_result></final_result> tags.
         '''
@@ -236,7 +226,7 @@ class Planner(Agent):
     def drug_disease_agent(self, drug_name, current_diseases):
         return f"{random.random()}"
     
-    def drug_medication_agent(self, drug_name, current_medication):
+    def drug_medication_agent(self, drug_name, current_medications):
         return f"{random.random()}"
         
         
