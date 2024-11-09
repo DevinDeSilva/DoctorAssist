@@ -218,6 +218,7 @@ class Planner(Agent):
             
     
     def toxicity_agent(self, drug_name):
+        
         return f"{random.random()}"
     
     def efficacy_agent(self, drug_name, disease_name):
