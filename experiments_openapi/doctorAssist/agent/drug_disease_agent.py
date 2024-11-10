@@ -1,7 +1,28 @@
 from .agent import Agent
 
 tool_list = [
-    
+    {
+            "type": "function",
+            "function": {
+                "name": "drug_disease_agent",
+                "description": "To understand the negative effects of the drug with the Current Diseases that is stated in Patient Profile",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "drug_name": {
+                            "type": "string",
+                            "description": "The drug name",
+                        },
+                        
+                        "current_diseases": {
+                            "type": "string",
+                            "description": "The current diseases the person has",
+                        }
+                    },
+                    "required": ["drug_name", "current_diseases"],
+                },
+            }
+        }
 ]
 
 class DrugDiseaseAgent(Agent):
@@ -16,3 +37,6 @@ class DrugDiseaseAgent(Agent):
                     '''
                     
         super().__init__()
+        
+    def database_search(self, drug_name, current_diseases):
+        pass
