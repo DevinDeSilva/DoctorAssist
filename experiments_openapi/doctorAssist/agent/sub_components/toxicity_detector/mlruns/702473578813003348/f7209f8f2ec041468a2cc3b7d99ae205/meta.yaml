@@ -1,0 +1,15 @@
+artifact_uri: file:///home/desild/Research/Tx-LLM-A-Large-Language-Model-for-Therapeutics/experiments_openapi/doctorAssist/agent/sub_components/toxicity_detector/mlruns/702473578813003348/f7209f8f2ec041468a2cc3b7d99ae205/artifacts
+end_time: 1731360285205
+entry_point_name: ''
+experiment_id: '702473578813003348'
+lifecycle_stage: active
+run_id: f7209f8f2ec041468a2cc3b7d99ae205
+run_name: bedecked-goat-423
+run_uuid: f7209f8f2ec041468a2cc3b7d99ae205
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1731360285194
+status: 3
+tags: []
+user_id: desild

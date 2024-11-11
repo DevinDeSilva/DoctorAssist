@@ -1,0 +1,6 @@
+artifact_location: file:///home/desild/Research/Tx-LLM-A-Large-Language-Model-for-Therapeutics/experiments_openapi/doctorAssist/agent/sub_components/toxicity_detector/mlruns/702473578813003348
+creation_time: 1731360285160
+experiment_id: '702473578813003348'
+last_update_time: 1731360285160
+lifecycle_stage: active
+name: MHC1_IEDB-IMGT_Nielsen_cnn_cnn
