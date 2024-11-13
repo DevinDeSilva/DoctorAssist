@@ -49,6 +49,7 @@ def llm_request(messages, tools=None, model=GPT_MODEL):
             print(f"Exception: {e}")
             raise e
 
+
 class Agent:
     def __init__(self):
         self.model = GPT_MODEL

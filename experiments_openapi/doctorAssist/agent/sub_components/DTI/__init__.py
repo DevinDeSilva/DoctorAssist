@@ -5,7 +5,7 @@ import sys
 cwd_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{cwd_path}/../../')
 
-from utils import match_name
+from experiments_openapi.doctorAssist.agent.sub_components.utils.utils import match_name
 
 
 drugbank_df = pd.read_csv(f"{cwd_path}/data/drugbank.csv", sep='\t')

@@ -126,12 +126,6 @@ add_current_directory_to_path()
 
 from agent.planner import Planner, DecompositionAgent
 
-decom = DecompositionAgent(
-    config=config,
-    )
-
-results = decom.process(default_prompt)
-
 planner = Planner(config=config)
 
-results = planner.process(results, default_prompt)
+results = planner.process(default_prompt)

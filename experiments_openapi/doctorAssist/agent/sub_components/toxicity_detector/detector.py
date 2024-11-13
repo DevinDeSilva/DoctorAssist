@@ -4,8 +4,9 @@ import numpy as np
 import torch
 import joblib
 
-from transformers import AutoTokenizer
-from transformers import AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+from ..utils.utils import get_SMILES
 
 class ToxicityDetector:
     def __init__(self, config):
@@ -40,8 +41,27 @@ class ToxicityDetector:
         print(toxicity)
         return toxicity[:,1]
     
+    def get_smile_string(self, drug_name):
+        if isinstance(drug_name, str):
+            result = get_SMILES(drug_name)
+            if result == "":
+                return None
+            else:
+                return result
+            
+        elif isinstance(drug_name, list):
+            smiles = []
+            for drug in drug_name:
+                result = get_SMILES(drug)
+                if result == "":
+                    smiles.append(None)
+                else:
+                    smiles.append(result)
+            return smiles
+    
     def output(self, text):
-        toxicity = self.predict(text)
+        text_smiles = self.get_smile_string(text)
+        toxicity = self.predict(text_smiles)
         
         if isinstance(text, str):
             toxicity = toxicity[0]
