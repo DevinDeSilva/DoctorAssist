@@ -9,6 +9,7 @@ from .agent import Agent
 from .decomposer import DecompositionAgent
 from .toxicity import ToxicityAgent
 from .drug_medication_agent import DrugMedicationAgent
+from .drug_disease_agent import DrugDiseaseAgent
 
 load_dotenv()
 
@@ -161,6 +162,7 @@ class Planner(Agent):
             
     
     def toxicity_agent(self, drug_name):
+        print(drug_name)
         tox_agent = ToxicityAgent(self.config)
         results = tox_agent.process(drug_name)
         
@@ -172,13 +174,15 @@ class Planner(Agent):
     
     def drug_disease_agent(self, drug_name, current_diseases):
         print(drug_name, current_diseases)
-        return f"{random.random()}"
+        drug_disease_agent = DrugDiseaseAgent(self.config)
+        results = drug_disease_agent.process(drug_name, current_diseases)
+        return results
     
     def drug_medication_agent(self, drug_name, current_medications):
         print(drug_name, current_medications)
         drug_med_agent = DrugMedicationAgent(self.config)
         results = drug_med_agent.process(drug_name, current_medications)
-        return f"{random.random()}"
+        return results
         
         
         

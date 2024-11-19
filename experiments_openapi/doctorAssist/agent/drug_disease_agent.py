@@ -1,11 +1,13 @@
 from .agent import Agent
+from .decomposer import DecompositionAgent
+from .sub_components.drug_disease_interaction_detector import DrugDiseaseInteractionDetector
 
 tool_list = [
     {
             "type": "function",
             "function": {
-                "name": "drug_disease_agent",
-                "description": "To understand the negative effects of the drug with the Current Diseases that is stated in Patient Profile",
+                "name": "internet_search",
+                "description": "Search the internet for information on the drug has any adverse effect on the disease",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -38,5 +40,26 @@ class DrugDiseaseAgent(Agent):
                     
         super().__init__()
         
-    def database_search(self, drug_name, current_diseases):
-        pass
+    def summarise_and_calculate_dti_score(self, search_results, drug_name, disease_name):
+        prompt = f"Does {drug_name} have any adverse interaction on {disease_name} use the following information \
+            to determine adversity explain why in small description produce a score as well between\
+            0 and 1 \n\n{search_results}"
+            
+        results = self.request(prompt)
+        return results
+        
+        
+        
+    def internet_search(self, drug_name, current_diseases):
+        diseases = current_diseases.split(",")
+        search_detectors = DrugDiseaseInteractionDetector(self.config)
+        
+        responses = []
+        for disease in diseases:
+            search_results = search_detectors.search_drug_target(drug_name, disease)
+            search_results = search_detectors.format_search_results(search_results)
+            
+            score = self.summarise_and_calculate_dti_score(search_results, drug_name, disease)
+            responses.append(score)
+            
+        return "\n".join(responses)

@@ -108,7 +108,7 @@ class EfficacyAgent(Agent):
         else:
             return result
         
-    def get_deep_purpose_interaction_score(self, drug_name, disease_name):
+    def get_efficacu_model_score(self, drug_name, disease_name):
         result = retrieval_hetionet(drug_name, disease_name)
         if result == "":
             return None
