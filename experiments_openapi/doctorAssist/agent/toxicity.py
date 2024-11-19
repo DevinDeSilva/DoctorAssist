@@ -1,10 +1,18 @@
+import os
+
 from .agent import Agent
 from .decomposer import DecompositionAgent
 from .sub_components.toxicity_detector import ToxicityDetector
 
+# get the path of this file
+PATH = os.path.dirname(os.path.abspath(__file__))
+
 config = {
     "model_name": "proteinbert and xgboost",
-    "model_path":"models/xgb_esm2_emb.pkl",
+    "model_path": os.path.join(
+        PATH,
+        "sub_components/toxicity_detector/models/xgb_esm2_emb.pkl"
+        ),
     'model_checkpoint': "facebook/esm2_t6_8M_UR50D",
     "max_length_tokens": 400,
     "device": "cuda",
@@ -43,13 +51,13 @@ class ToxicityAgent(Agent):
                     
         super().__init__()
         
-    def get_toxicity_detector_score(self, text):
+    def get_toxicity_detector_score(self, drug_name):
         tox_det = ToxicityDetector(config)
-        output = tox_det.output(text)
+        output = tox_det.output(drug_name)
         return output
     
     def process_subproblem(self,subproblem, user_prompt):
-        process_prompt = f"The original user problem is: {user_prompt}\nNow, please you solve this problem: {subproblem}"
+        process_prompt = f"The original user problem is: {self.config['base_user_prompt']}\nNow, please you solve this problem: {subproblem}"
         response = self.request(process_prompt)
         
         return response

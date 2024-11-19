@@ -8,6 +8,7 @@ import random
 from .agent import Agent
 from .decomposer import DecompositionAgent
 from .toxicity import ToxicityAgent
+from .drug_medication_agent import DrugMedicationAgent
 
 load_dotenv()
 
@@ -20,7 +21,7 @@ tool_list = [
             "type": "function",
             "function": {
                 "name": "toxicity_agent",
-                "description": "To understand the safety of the drug, including toxicity and side effects, consult the Safety Agent for safety information. Given drug name, return the safety information of the drug, e.g. drug introduction, toxicity and side effects etc.",
+                "description": "To understand the toxicity of the drug for a human, consult the Toxicity Agent. Given drug name, return the toxicity information of the drug",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -166,17 +167,23 @@ class Planner(Agent):
         return results
     
     def efficacy_agent(self, drug_name, disease_name):
+        print(drug_name, disease_name)
         return f"{random.random()}"
     
     def drug_disease_agent(self, drug_name, current_diseases):
+        print(drug_name, current_diseases)
         return f"{random.random()}"
     
     def drug_medication_agent(self, drug_name, current_medications):
+        print(drug_name, current_medications)
+        drug_med_agent = DrugMedicationAgent(self.config)
+        results = drug_med_agent.process(drug_name, current_medications)
         return f"{random.random()}"
         
         
         
     def process(self, prompt):
+        self.config["base_user_prompt"] = prompt
         decomposer = DecompositionAgent(
             config=self.config,
             tools=self.agent_tools,

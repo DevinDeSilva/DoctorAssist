@@ -1,6 +1,7 @@
 
 default_prompt = """
-The patient is experiencing osteoarthritis will the use of Ibuprofen be effictive against him: 
+The patient is experiencing osteoarthritis will the use of Ibuprofen be effictive against him and not harmful 
+to the patient: 
 
 Patient Profile:
     Age: 56
@@ -129,3 +130,4 @@ from agent.planner import Planner, DecompositionAgent
 planner = Planner(config=config)
 
 results = planner.process(default_prompt)
+print(results)

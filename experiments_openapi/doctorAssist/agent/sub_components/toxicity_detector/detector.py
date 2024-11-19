@@ -1,12 +1,14 @@
 import random
 import numpy as np
-
+import os
+import warnings
 import torch
 import joblib
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 from ..utils.utils import get_SMILES
+warnings.filterwarnings("ignore")
 
 class ToxicityDetector:
     def __init__(self, config):
@@ -38,7 +40,6 @@ class ToxicityDetector:
         esm2_emb = self.get_esm2_embedding(text)
         xgb_input = esm2_emb.cpu().detach().numpy()
         toxicity = self.xgb_model.predict_proba(xgb_input)
-        print(toxicity)
         return toxicity[:,1]
     
     def get_smile_string(self, drug_name):
@@ -92,4 +93,17 @@ class ToxicityDetector:
         
     def load_xgboost_model(self):
         self.xgb_model = joblib.load(self.config["model_path"])
-        
+
+if __name__ == "__main__":
+    config = {
+        "model_name": "proteinbert and xgboost",
+        "model_path":"models/xgb_esm2_emb.pkl",
+        'model_checkpoint': "facebook/esm2_t6_8M_UR50D",
+        "max_length_tokens": 400,
+        "device": "cuda",
+        "seed": 49
+    }
+    
+    tox_det = ToxicityDetector(config)
+    output = tox_det.output("aspirin")
+    print(output)

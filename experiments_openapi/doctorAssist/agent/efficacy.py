@@ -1,6 +1,23 @@
+import os
+
 from .agent import Agent
 from .sub_components.drugbank import retrieval_drugbank, get_SMILES
 from .sub_components.hetionet import retrieval_hetionet
+
+# get the path of this file
+PATH = os.path.dirname(os.path.abspath(__file__))
+
+config = {
+    "model_name": "proteinbert and xgboost",
+    "model_path": os.path.join(
+        PATH,
+        "sub_components/toxicity_detector/models/xgb_esm2_emb.pkl"
+        ),
+    'model_checkpoint': "facebook/esm2_t6_8M_UR50D",
+    "max_length_tokens": 400,
+    "device": "cuda",
+    "seed": 49
+}
 
 tool_list = [
             {
