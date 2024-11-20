@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
-from ..utils.utils import get_SMILES
+from utils import get_SMILES
 warnings.filterwarnings("ignore")
 
 

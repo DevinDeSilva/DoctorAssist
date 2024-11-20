@@ -5,10 +5,13 @@ import warnings
 import torch
 import joblib
 import pickle
+import sys
 
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
+cwd_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(f'{cwd_path}/../utils')
 
-from ..utils.utils import get_SMILES
+from utils import get_SMILES
 warnings.filterwarnings("ignore")
 
 class DrugDrugInteractionDetector:
