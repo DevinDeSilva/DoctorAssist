@@ -1,8 +1,8 @@
 import os
 
 from .agent import Agent
-from .sub_components.drugbank import retrieval_drugbank, get_SMILES
-from .sub_components.hetionet import retrieval_hetionet
+from .decomposer import DecompositionAgent
+from .sub_components.drug_efficacy_detector import EfficacyDetector
 
 # get the path of this file
 PATH = os.path.dirname(os.path.abspath(__file__))
@@ -11,10 +11,10 @@ config = {
     "model_name": "proteinbert and xgboost",
     "model_path": os.path.join(
         PATH,
-        "sub_components/toxicity_detector/models/xgb_esm2_emb.pkl"
+        "sub_components/drug_efficacy_detector/models/xgb_DTI.pkl"
         ),
     'model_checkpoint': "facebook/esm2_t6_8M_UR50D",
-    "max_length_tokens": 400,
+    "max_length_tokens": 500,
     "device": "cuda",
     "seed": 49
 }
@@ -65,20 +65,26 @@ tool_list = [
             {
                 "type": "function",
                 "function": {
-                    "name": "get_SMILES",
-                    "description": "Given a drug's name, the model returns its Simplified Molecular Input Line Entry System (SMILES) notation.",
+                    "name": "get_efficacy_model_score",
+                    "description": '''
+                    Given the names of a drug and a disease, the model gives the binding affinity level of the drug and disease.
+                    ''',
                     "parameters": {
                         "type": "object",
                         "properties": {
                             "drug_name": {
                                 "type": "string",
                                 "description": "The drug name",
+                            },
+                            "disease_name": {
+                                "type": "string",
+                                "description": "The disease name",
                             }
                         },
-                        "required": ["drug_name"],
+                        "required": ["drug_name", "disease_name"],
                     },
                 }
-            },
+            }
         ]
 
 class EfficacyAgent(Agent):
@@ -86,7 +92,17 @@ class EfficacyAgent(Agent):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
-        self.reasoning_examples = ""
+        self.detector = EfficacyDetector(config)
+        self.reasoning_examples = '''
+        
+            Question: How can I evaluate the efficacy of the drug aspirin on the disease diabetes?
+            Answer:
+            <subproblem> Assessing the drug's effectiveness requires retrieving information from the DrugBank database which can be done using "retrieval_drugbank".</subproblem>
+            <subproblem> To evaluate the drug's impact on the disease, we must obtain the pathway linking the drug to the disease from the Hetionet Knowledge Graph by using the "retrieval_hetionet" tool. </subproblem>
+            <subproblem> To evaluate the binding affinity, we must catculate the binding affinity using "get_efficacy_model_score" tool. </subproblem>
+            <subproblem> Offer insights on the drug and disease based on your expertise, without resorting to any external tools. </subproblem>
+            
+            '''
         self.role = f'''
                     You are an expert in determining efficacy levels of a specific drug for a disease.
                     '''
@@ -95,29 +111,55 @@ class EfficacyAgent(Agent):
         
         
     def retrieval_drugbank(self, drug_name):
-        result = retrieval_drugbank(drug_name)
+        result = self.detector.retrival_drugbank(drug_name)
         if result == "":
             return None
         else:
             return result
 
     def retrieval_hetionet(self, drug_name, disease_name):
-        result = retrieval_hetionet(drug_name, disease_name)
+        result = self.detector.retrival_hetionet(drug_name, disease_name)
         if result == "":
             return None
         else:
             return result
         
-    def get_efficacu_model_score(self, drug_name, disease_name):
-        result = retrieval_hetionet(drug_name, disease_name)
+    def get_efficacy_model_score(self, drug_name, disease_name):
+        result = self.detector.output(drug_name, disease_name)
         if result == "":
             return None
         else:
             return result
+        
+        
+    def process_subproblem(self,subproblem, user_prompt):
+        process_prompt = f"The original user problem is: {self.config['base_user_prompt']}\nNow, please you solve this problem: {subproblem}"
+        response = self.request(process_prompt)
+        
+        return response
+    
+    def combine_agent_results(self, problem_results, prompt):
+        return "\n".join(problem_results)
+        
+    def process(self, drug_name, current_medication):
+        current_medication = current_medication.split(",")
+        prompt = "Please evaluate the interaction of drug {} with the medication list {}".format(drug_name, current_medication)
+        
+        decomposer = DecompositionAgent(
+            config=self.config,
+            tools=self.agent_tools,
+            reasoning_examples=self.reasoning_examples
+            )
 
-    def get_SMILES(self, drug_name):
-        result = get_SMILES(drug_name)
-        if result == "":
-            return None
-        else:
-            return result
+        subproblems = decomposer.process(prompt) 
+        
+        responses = []
+        
+        for subproblem in subproblems:
+            response = self.process_subproblem(subproblem, prompt)
+            responses.append(response)
+            
+        final_results = self.combine_agent_results(responses, prompt)
+            
+        return final_results
+    

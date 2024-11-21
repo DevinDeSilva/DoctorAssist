@@ -8,6 +8,10 @@ name_synonyms = json.load(open(f"{cwd_path}/data/name_synonyms.json", 'r'))
 drugbank_df = pd.read_csv(f"{cwd_path}/data/drugbank.csv", sep='\t')
 drug_names = drugbank_df['name'].str.lower().tolist()
 
+
+def get_drug_bank_df():
+    return drugbank_df
+
 def find_least_levenshtein_distance(target_string, array):
     array = list(array)
 
@@ -25,7 +29,7 @@ def find_least_levenshtein_distance(target_string, array):
         distance = Levenshtein.distance(target_string, string)
 
         if distance == 0:
-            print(f"Similar Name: {target_string} -> {string}, levenshtein distance: {distance}", depth=2)
+            print(f"Similar Name: {target_string} -> {string}, levenshtein distance: {distance}")
             return string, 0
 
         # Update minimum distance and string if a new minimum is found
@@ -33,7 +37,7 @@ def find_least_levenshtein_distance(target_string, array):
             min_distance = distance
             min_string = string
     
-    print(f"Similar Name: {target_string} -> {min_string}, levenshtein distance: {min_distance}", depth=2)
+    print(f"Similar Name: {target_string} -> {min_string}, levenshtein distance: {min_distance}")
 
     return min_string, min_distance
 

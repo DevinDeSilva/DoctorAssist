@@ -32,7 +32,14 @@ class DrugDiseaseAgent(Agent):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
-        self.reasoning_examples = ""
+        self.reasoning_examples = '''
+                
+            Question: How can I evaluate any adverse effect of the drug aspirin on the Current Diseases [Type 2 Diabetes, Hypertension, Chronic Kidney Disease (Stage 2)] in the Patient Profile?
+            Answer:
+            <subproblem> To evaluate the adverse effect of the drugs, we must use the "internet_search" tool to check if any drug has ny adverse effect on the diseases. </subproblem>
+            <subproblem> Provide insights into the adverse effect of the drug on the Current Diseases in the Patient Profile, without resorting to any external tools. </subproblem>
+
+        '''
         self.role = f'''
                     You are an expert in determining whether there is a adverse effect of the drug after 
                     it interacts with th medication the patient is already taking.
@@ -63,3 +70,34 @@ class DrugDiseaseAgent(Agent):
             responses.append(score)
             
         return "\n".join(responses)
+    
+    def process_subproblem(self,subproblem, user_prompt):
+        process_prompt = f"The original user problem is: {self.config['base_user_prompt']}\nNow, please you solve this problem: {subproblem}"
+        response = self.request(process_prompt)
+        
+        return response
+    
+    def combine_agent_results(self, problem_results, prompt):
+        return "\n".join(problem_results)
+        
+    def process(self, drug_name, current_medication):
+        current_medication = current_medication.split(",")
+        prompt = "Please evaluate the interaction of drug {} with the disease list {}".format(drug_name, current_medication)
+        
+        decomposer = DecompositionAgent(
+            config=self.config,
+            tools=self.agent_tools,
+            reasoning_examples=self.reasoning_examples
+            )
+
+        subproblems = decomposer.process(prompt) 
+        
+        responses = []
+        
+        for subproblem in subproblems:
+            response = self.process_subproblem(subproblem, prompt)
+            responses.append(response)
+            
+        final_results = self.combine_agent_results(responses, prompt)
+            
+        return final_results

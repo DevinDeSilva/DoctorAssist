@@ -44,7 +44,15 @@ class ToxicityAgent(Agent):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
-        self.reasoning_examples = ""
+        self.reasoning_examples = '''
+            Example:
+            
+            Question: How can I evaluate the toxicity of the drug aspirin on the disease diabetes?
+            Answer:
+            <subproblem> To assess the risk associated with the drug, we must use the "get_drug_toxicity" tool. </subproblem>
+            <subproblem> Provide insights into the toxicity of both the drug and the disease based on your expertise, without resorting to any external tools. </subproblem>
+
+            '''
         self.role = f'''
                     You are an expert in determining toxicity levels of a specific drug.
                     '''
@@ -71,6 +79,7 @@ class ToxicityAgent(Agent):
         decomposer = DecompositionAgent(
             config=self.config,
             tools=self.agent_tools,
+            reasoning_examples=self.reasoning_examples
             )
 
         subproblems = decomposer.process(prompt) 

@@ -54,7 +54,14 @@ class DrugMedicationAgent(Agent):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
-        self.reasoning_examples = ""
+        self.reasoning_examples = '''
+        
+            Question: How can I evaluate any adverse interaction of the drug aspirin on the Current Medications [Metformin, Lisinopril, Atorvastatin] in the Patient Profile?
+            Answer:
+            <subproblem> To evaluate the adverse interaction of the drug aspirin and on current medication we must use the "get_drug_drug_interaction" tool. </subproblem>
+            <subproblem> Provide insights into the adverse interaction of the drug on the Current Medication in the Patient Profile, without resorting to any external tools. </subproblem>
+
+        '''
         self.role = f'''
                     You are an expert in determining interaction between two drugs.
                     '''
@@ -83,6 +90,7 @@ class DrugMedicationAgent(Agent):
         decomposer = DecompositionAgent(
             config=self.config,
             tools=self.agent_tools,
+            reasoning_examples=self.reasoning_examples
             )
 
         subproblems = decomposer.process(prompt) 

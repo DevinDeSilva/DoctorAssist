@@ -96,13 +96,21 @@ class EfficacyDetector:
         
         text_smiles_drug = self.get_smile_string(text_drug)
         text_smiles_target = self.get_smile_string(text_target)
+        
+        #hetionet_results = self.retrival_hetionet(text_drug, text_target)
+        #drugbank_results = self.retrival_drugbank(text_drug)
+        
         behavior = self.predict(
             text_smiles_drug, 
             text_smiles_target)
         
         behavior = behavior[0]
         
-        output= self.string_formattting(text_drug, text_target, behavior)
+        output= self.string_formattting(
+            text_drug, 
+            text_target, 
+            behavior,
+            )
                 
         return output
     

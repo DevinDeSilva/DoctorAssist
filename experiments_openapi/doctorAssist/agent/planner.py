@@ -116,7 +116,20 @@ class Planner(Agent):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
-        self.reasoning_examples = ""
+        self.reasoning_examples = '''
+        
+            Question: The patient is experiencing a disease will the use of a drug be effictive against him and not harmful 
+            to the patient.
+             
+            Answer: 
+            To solve this problem, we need to break it down into smaller subproblems in the aspects of toxicity, efficacy, drug interactions with current diseases and drug interactions with
+            current medication.
+            <subproblem> To understand the toxicity of the drug to the patient and a human we need to consult the toxicity agent for information in toxicity. </subproblem>
+            <subproblem> To evaluate the drug's efficacy against diseases, it is essential to request information on the drug's effectiveness from the Efficacy Agent. Obtain details about the drug, including its description, pharmacological indications, absorption, volume of distribution, metabolism, route of elimination. </subproblem>
+            <subproblem> Ask the drug_disease agent to assess the whether the drug has any adverse effect on the diseases that the patient currently has stated in the Patient Profile</subproblem>
+            <subproblem> Ask the drug_medication agent to assess the whether the drug has any adverse interaction with the drugs that the patient currently is taking as stated in the Patient Profile</subproblem>
+
+        '''
         self.role = f'''
                     You are an expert in assisting doctors to choose drugs for patients.
                     '''
@@ -191,6 +204,7 @@ class Planner(Agent):
         decomposer = DecompositionAgent(
             config=self.config,
             tools=self.agent_tools,
+            reasoning_examples=self.reasoning_examples
             )
 
         subproblems = decomposer.process(prompt) 
