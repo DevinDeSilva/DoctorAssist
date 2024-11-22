@@ -1,1 +1,1 @@
-from .detector import DrugDrugInteractionDetector
+from .detector import EfficacyDetector

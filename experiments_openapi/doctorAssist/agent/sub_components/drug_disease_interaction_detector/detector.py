@@ -76,10 +76,6 @@ class DrugDiseaseInteractionDetector:
         self.__setup__()
         
     def __setup__(self):
-        np.random.seed(self.config["seed"])
-        torch.manual_seed(self.config["seed"])
-        random.seed(self.config["seed"])
-        
         self.search_engine = "google"
         self.num_results = 5
         

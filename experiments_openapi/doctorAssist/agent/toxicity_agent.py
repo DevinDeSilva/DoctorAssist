@@ -7,7 +7,7 @@ from .sub_components.toxicity_detector import ToxicityDetector
 # get the path of this file
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-config = {
+detector_config = {
     "model_name": "proteinbert and xgboost",
     "model_path": os.path.join(
         PATH,
@@ -60,7 +60,7 @@ class ToxicityAgent(Agent):
         super().__init__()
         
     def get_toxicity_detector_score(self, drug_name):
-        tox_det = ToxicityDetector(config)
+        tox_det = ToxicityDetector(detector_config)
         output = tox_det.output(drug_name)
         return output
     

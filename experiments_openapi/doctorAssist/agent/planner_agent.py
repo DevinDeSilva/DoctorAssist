@@ -7,9 +7,10 @@ import random
 
 from .agent import Agent
 from .decomposer import DecompositionAgent
-from .toxicity import ToxicityAgent
+from .toxicity_agent import ToxicityAgent
 from .drug_medication_agent import DrugMedicationAgent
 from .drug_disease_agent import DrugDiseaseAgent
+from .efficacy_agent import EfficacyAgent
 
 load_dotenv()
 
@@ -183,7 +184,9 @@ class Planner(Agent):
     
     def efficacy_agent(self, drug_name, disease_name):
         print(drug_name, disease_name)
-        return f"{random.random()}"
+        efficacy_agent = EfficacyAgent(self.config)
+        results = efficacy_agent.process(drug_name, disease_name)
+        return results
     
     def drug_disease_agent(self, drug_name, current_diseases):
         print(drug_name, current_diseases)

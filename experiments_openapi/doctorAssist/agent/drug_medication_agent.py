@@ -7,7 +7,7 @@ from .sub_components.drug_drug_interaction_detector import DrugDrugInteractionDe
 # get the path of this file
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-config = {
+detector_config = {
     "model_name": "proteinbert and xgboost",
     "model_path_intrinsic": os.path.join(
         PATH,
@@ -69,7 +69,7 @@ class DrugMedicationAgent(Agent):
         super().__init__()
         
     def get_drug_drug_interaction(self, drug_name, current_medication):
-        detector = DrugDrugInteractionDetector(config)
+        detector = DrugDrugInteractionDetector(detector_config)
         output1 = detector.intrinsic_output(drug_name, current_medication)
         output2 = detector.extrinsic_output(drug_name, current_medication)
         return "{} \n\n {}".format(output1, output2)

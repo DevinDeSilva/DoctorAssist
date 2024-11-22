@@ -11,7 +11,7 @@ cwd_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{cwd_path}/../utils')
 
 from .hetionet import retrieval_hetionet, retrieval_drugbank
-from utils import get_SMILES
+from utils import get_SMILES, get_PROTEIN
 warnings.filterwarnings("ignore")
 
 class EfficacyDetector:
@@ -47,7 +47,7 @@ class EfficacyDetector:
             esm2_emb_drug.cpu().detach().numpy(), 
             esm2_emb_target.cpu().detach().numpy()], axis=1)
         
-        effect_prob = self.xgb_model.predict_proba(xgb_input)
+        effect_prob = self.xgb_model.predict(xgb_input)
         
         return effect_prob
     
@@ -68,9 +68,27 @@ class EfficacyDetector:
                 else:
                     smiles.append(result)
             return smiles
+        
+    def get_protein_string(self, drug_name):
+        if isinstance(drug_name, str):
+            result = get_PROTEIN(drug_name,self.config["n_outs"])
+            if result == "":
+                return None
+            else:
+                return result
+            
+        elif isinstance(drug_name, list):
+            smiles = []
+            for drug in drug_name:
+                result = get_SMILES(drug)
+                if result == "":
+                    smiles.append(None)
+                else:
+                    smiles.append(result)
+            return smiles
     
     
-    def string_formattting(self, drug, target, model_output, n_outs=4):
+    def string_formattting(self, drug, target, model_output):
         str_format = " The a binding score for drug {} for disease {} is {} if it's smaller than 1.5 it is very likely to effect"
         
         str_format = str_format.format(drug, target, model_output)
@@ -95,22 +113,28 @@ class EfficacyDetector:
     def output(self, text_drug, text_target):
         
         text_smiles_drug = self.get_smile_string(text_drug)
-        text_smiles_target = self.get_smile_string(text_target)
+        text_smiles_target = self.get_protein_string(text_target)
         
         #hetionet_results = self.retrival_hetionet(text_drug, text_target)
         #drugbank_results = self.retrival_drugbank(text_drug)
         
-        behavior = self.predict(
-            text_smiles_drug, 
-            text_smiles_target)
+        outputs = []
         
-        behavior = behavior[0]
+        for text in text_smiles_target:
+            behavior = self.predict(
+                text_smiles_drug, 
+                text)
+            
+            behavior = behavior[0]
+            
+            outputs.append(behavior)
         
+        outputs = min(outputs)
         output= self.string_formattting(
-            text_drug, 
-            text_target, 
-            behavior,
-            )
+                text_drug, 
+                text_target, 
+                outputs,
+                )
                 
         return output
     

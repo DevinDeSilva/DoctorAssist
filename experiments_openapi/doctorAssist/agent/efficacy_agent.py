@@ -7,7 +7,7 @@ from .sub_components.drug_efficacy_detector import EfficacyDetector
 # get the path of this file
 PATH = os.path.dirname(os.path.abspath(__file__))
 
-config = {
+detector_config = {
     "model_name": "proteinbert and xgboost",
     "model_path": os.path.join(
         PATH,
@@ -16,6 +16,7 @@ config = {
     'model_checkpoint': "facebook/esm2_t6_8M_UR50D",
     "max_length_tokens": 500,
     "device": "cuda",
+    "n_outs": 3,
     "seed": 49
 }
 
@@ -92,7 +93,7 @@ class EfficacyAgent(Agent):
         self.agent_tools = tool_list
         self.config = config
         self.depth = depth
-        self.detector = EfficacyDetector(config)
+        self.detector = EfficacyDetector(detector_config)
         self.reasoning_examples = '''
         
             Question: How can I evaluate the efficacy of the drug aspirin on the disease diabetes?
@@ -141,9 +142,8 @@ class EfficacyAgent(Agent):
     def combine_agent_results(self, problem_results, prompt):
         return "\n".join(problem_results)
         
-    def process(self, drug_name, current_medication):
-        current_medication = current_medication.split(",")
-        prompt = "Please evaluate the interaction of drug {} with the medication list {}".format(drug_name, current_medication)
+    def process(self, drug_name, disease_name):
+        prompt = "Please evaluate the efficacy of drug {} with disease {}".format(drug_name, disease_name)
         
         decomposer = DecompositionAgent(
             config=self.config,

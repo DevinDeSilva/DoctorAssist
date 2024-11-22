@@ -25,6 +25,8 @@ config = {
 import sys
 import os
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+
 
 def add_current_directory_to_path():
     current_directory = os.getcwd()
@@ -36,7 +38,7 @@ def add_current_directory_to_path():
         
 add_current_directory_to_path()
 
-from agent.planner import Planner, DecompositionAgent
+from agent.planner_agent import Planner, DecompositionAgent
 
 planner = Planner(config=config)
 

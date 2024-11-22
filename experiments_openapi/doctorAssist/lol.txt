@@ -1,0 +1,6 @@
+'The original user problem is: \nThe patient is experiencing osteoarthritis will the use of Ibuprofen be effictive against him 
+and not harmful \nto the patient: \n\nPatient Profile:\n    Age: 56\n\n   
+ Current Diseases:\n        Type 2 Diabetes\n        Hypertension\n        Chronic Kidney Disease (Stage 2) \n        \n    
+ Current Medications:\n        Metformin (for diabetes)\n        Lisinopril (for hypertension)\n        
+ Atorvastatin (for high cholesterol)\n\nNow, please you solve this problem: We need to retrieve detailed information about the drug
+  Ibuprofen from the DrugBank database using "retrieval_drugbank".'

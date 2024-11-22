@@ -22,9 +22,6 @@ class DecompositionAgent(Agent):
         self.reasoning_examples = reasoning_examples
         
         super().__init__()
-
-        
-        
         
         
     def process(self,prompt):

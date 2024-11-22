@@ -158,6 +158,20 @@ def retrieval_drugbank(drug_name):
 
     return drugbank_info
 
+import requests
+
+def get_target_name_from_uniprot(uniprot_id):
+    url = f"https://rest.uniprot.org/uniprotkb/{uniprot_id}.json"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return data.get("genes", [{}])[0].get("geneName", {}).get("value")
+    except requests.RequestException as e:
+        print(f"Error retrieving gene name for UniProt ID {uniprot_id}: {e}")
+        return None
+
         
 #def retrieval_hetionet(self, drug_name, disease_name):
 #    pass
@@ -167,4 +181,7 @@ if __name__ == '__main__':
     end_node_name = "bipolar disorder"
 
     results = retrieval_hetionet(start_node_name, end_node_name)
+    
+    results = get_target_name_from_uniprot("")
+    print(results)
         
