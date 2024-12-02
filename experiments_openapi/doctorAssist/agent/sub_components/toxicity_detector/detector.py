@@ -1,7 +1,6 @@
 import random
 import numpy as np
 import os
-import warnings
 import torch
 import joblib
 import sys
@@ -11,6 +10,8 @@ cwd_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(f'{cwd_path}/../utils')
 
 from utils import get_SMILES
+
+import warnings
 warnings.filterwarnings("ignore")
 
 class ToxicityDetector:

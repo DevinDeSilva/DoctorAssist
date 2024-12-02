@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 from utils import get_SMILES
+
+import warnings
 warnings.filterwarnings("ignore")
 
 

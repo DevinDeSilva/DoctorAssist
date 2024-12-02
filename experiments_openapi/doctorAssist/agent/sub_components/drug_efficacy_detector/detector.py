@@ -1,7 +1,6 @@
 import random
 import numpy as np
 import os
-import warnings
 import torch
 import joblib
 import sys
@@ -12,6 +11,8 @@ sys.path.append(f'{cwd_path}/../utils')
 
 from .hetionet import retrieval_hetionet, retrieval_drugbank
 from utils import get_SMILES, get_PROTEIN
+
+import warnings
 warnings.filterwarnings("ignore")
 
 class EfficacyDetector:
@@ -129,10 +130,15 @@ class EfficacyDetector:
             
             outputs.append(behavior)
         
-        outputs = min(outputs)
+        try:
+            outputs = min(outputs)
+            
+        except ValueError:
+            outputs = "No information available"
+            
         output= self.string_formattting(
                 text_drug, 
-                text_target, 
+                text_target,       
                 outputs,
                 )
                 
@@ -171,3 +177,4 @@ if __name__ == "__main__":
     
     detector = EfficacyDetector(config)
     output = detector.output("aspirin", "ibuprofen")
+        

@@ -104,7 +104,8 @@ class Agent:
         if response_choice.finish_reason == "tool_calls":
             tool_calls = response_choice.message.tool_calls
             for tool_call in tool_calls:
-                print(f"[Action] Function calling...")
+                #print(f"[Action] Function calling...")
+                pass
 
                 try:
                     function_name = tool_call.function.name
