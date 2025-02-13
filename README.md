@@ -1,37 +1,6 @@
 # DoctorAssist
 
-## Example Prompt 
-
-```text
-The patient is experiencing osteoarthritis will the use of Ibuprofen be effictive against him:
-
-  
-
-Patient Profile:
-
-    Age: 56
-
-  
-
-    Current Diseases:
-
-        Type 2 Diabetes
-
-        Hypertension
-
-        Chronic Kidney Disease (Stage 2)
-
-    Current Medications:
-
-        Metformin (for diabetes)
-
-        Lisinopril (for hypertension)
-
-        Atorvastatin (for high cholesterol)
-```
-
-
-## Input and Output Examples.
+## Example Prompt  and Output Examples.
 
 ![](docs/prompt.png)
 
@@ -41,7 +10,7 @@ Patient Profile:
 
 ### Process FlowDiagram.
 
-![](docs\DoctorAssist-methodology.png)
+![](docs/DoctorAssist-methodology.png)
 
 ### Component details
 
