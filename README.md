@@ -31,7 +31,7 @@ Patient Profile:
 ```
 
 
-## Planning Agent.
+## Input and Output Examples.
 
 ![](docs/prompt.png)
 
@@ -39,7 +39,11 @@ Patient Profile:
 ![](docs/output.png)
 
 
-### Architecture for now.
+### Process FlowDiagram.
+
+![](docs\DoctorAssist-methodology.png)
+
+### Component details
 
 ![](docs/DoctorAssist.drawio.png)
 
